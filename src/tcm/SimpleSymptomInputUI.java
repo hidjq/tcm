@@ -26,7 +26,7 @@ public class SimpleSymptomInputUI extends JFrame {
         addSymptomInputSection(contentPanel, "肌肉骨骼系统", new String[]{"关节痛", "腰背痛", "颈椎痛", "四肢酸痛"});
         addSymptomInputSection(contentPanel, "循环系统", new String[]{"胸痛", "心悸", "浮肿", "中风症状"});
         addSymptomInputSection(contentPanel, "皮肤与淤斑", new String[]{"皮疹", "瘙痒", "紫癜", "淤斑"});
-        addSymptomInputSection(contentPanel, "全身症状", new String[]{"发热", "乏力", "盗汗", "虚弱"});
+        addSymptomInputSection(contentPanel, "全身症状", new String[]{"发热", "乏力", "盗汗", "虚弱","畏寒"});
 
         // 提交按钮
         JButton submitButton = new JButton("提交");
@@ -76,6 +76,8 @@ public class SimpleSymptomInputUI extends JFrame {
     private void displayUserInput() throws JessException {
     	Rete engine = new Rete();
     	engine.batch("src/template.clp");
+    	engine.batch("src/facts.clp");
+    	engine.batch("src/herb.clp");
         System.out.println("用户输入的症状信息：");
         for (String bodyPart : userInputText.keySet()) {
         	Fact input = new Fact("Symptom", engine);
@@ -97,8 +99,24 @@ public class SimpleSymptomInputUI extends JFrame {
             input.setSlotValue("selected-symptoms", new Value(symptomVector, RU.LIST));
             System.out.println();
             engine.assertFact(input);
-            engine.eval("(facts)");
         }
+        Fact userinfo = new Fact("Basic-information", engine);
+        try {
+			for (String key : UserInfoInput.userbasic.keySet()) {
+				userinfo.setSlotValue(key, new Value(UserInfoInput.userbasic.get(key), RU.INTEGER));
+			}
+			for(String meal : UserInfoInput.userbasicOptions.keySet()) {
+				if(UserInfoInput.userbasicOptions.get(meal).isSelected()) {
+					userinfo.setSlotValue(meal, new Value(1, RU.INTEGER));
+				} else {
+					userinfo.setSlotValue(meal, new Value(0, RU.INTEGER));
+				}
+			}
+		} catch (JessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        engine.eval("(facts)");
     }
 
     public JPanel getContentPanel() {

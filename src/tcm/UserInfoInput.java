@@ -9,15 +9,16 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class UserInfoInput extends JFrame {
-	 private JPanel contentPanel;
-
+	 	private JPanel contentPanel;
+	 	public static HashMap<String, String> userbasic = new HashMap<>();
+	 	public static HashMap<String, JCheckBox> userbasicOptions = new HashMap<>();
 	    public UserInfoInput() {
 	        contentPanel = new JPanel();
 	        contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
 
-	        addBasicInfoSection("身高 (cm)", "请输入您的身高");
-	        addBasicInfoSection("体重 (kg)", "请输入您的体重");
-	        addBasicInfoSection("年龄", "请输入您的年龄");
+	        addBasicInfoSection("height", "请输入您的身高");
+	        addBasicInfoSection("weight", "请输入您的体重");
+	        addBasicInfoSection("age", "请输入您的年龄");
 	        addMealSkippingSection();
 	        addSleepInfoSection();
 	    }
@@ -27,6 +28,7 @@ public class UserInfoInput extends JFrame {
 	        JLabel label = new JLabel(title + ": ");
 	        JTextField textField = new JTextField(20);
 	        textField.setToolTipText(placeholder);
+	        userbasic.put(title, textField.getText());
 	        inputPanel.add(label);
 	        inputPanel.add(textField);
 	        contentPanel.add(inputPanel);
@@ -35,9 +37,10 @@ public class UserInfoInput extends JFrame {
 	    private void addMealSkippingSection() {
 	        JPanel mealPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 	        JLabel label = new JLabel("跳过的餐次 (可多选): ");
-	        String[] meals = {"早餐", "午餐", "晚餐"};
+	        String[] meals = {"breakfast", "lunch", "dinner"};
 	        for (String meal : meals) {
 	            JCheckBox checkBox = new JCheckBox(meal);
+	            userbasicOptions.put(meal, checkBox);
 	            mealPanel.add(checkBox);
 	        }
 	        contentPanel.add(mealPanel);
@@ -49,15 +52,19 @@ public class UserInfoInput extends JFrame {
 	        sleepPanel.add(new JLabel("平均每天睡眠时长 (小时): "));
 	        JTextField textField = new JTextField(10);
 	        sleepPanel.add(textField);
+	        userbasic.put("sleep-hours", textField.getText());
 
 	        sleepPanel.add(new JLabel("是否熬夜: "));
 	        JComboBox<String> comboBox = new JComboBox<>(new String[]{"是", "否"});
 	        sleepPanel.add(comboBox);
+	        userbasic.put("stauy-up", comboBox.getSelectedItem().toString());
 
 	        sleepPanel.add(new JLabel("起夜次数: "));
 	        JTextField nightWakeField = new JTextField(10);
 	        sleepPanel.add(nightWakeField);
-
+	        userbasic.put("sleep-pattern", nightWakeField.getText());
+	        
+	        
 	        contentPanel.add(sleepPanel);
 	    }
 
